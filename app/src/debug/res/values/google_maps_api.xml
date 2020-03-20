@@ -1,0 +1,24 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=AC:5C:EA:AB:04:8A:EF:7D:06:33:EC:78:40:55:5A:B2:1A:90:36:13%3Bng.com.knowit.flightapp
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    AC:5C:EA:AB:04:8A:EF:7D:06:33:EC:78:40:55:5A:B2:1A:90:36:13
+
+    SHA-1 certificate fingerprint:
+    AC:5C:EA:AB:04:8A:EF:7D:06:33:EC:78:40:55:5A:B2:1A:90:36:13
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDBI55BHVcumXs6_fbeNTmzDZkBAjyquOw</string>
+</resources>
