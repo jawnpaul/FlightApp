@@ -15,7 +15,10 @@ class MainActivity : AppCompatActivity() {
 
         if (utility.isOnline(this)) {
             Fabric.with(this, Crashlytics())
+
         }
 
     }
+
+
 }
