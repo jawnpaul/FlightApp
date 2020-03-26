@@ -22,6 +22,7 @@ import ng.com.knowit.flightapp.model.*
 import ng.com.knowit.flightapp.recycleradapters.FlightScheduleAdapter
 import ng.com.knowit.flightapp.ui.FlightScheduleViewModel
 import ng.com.knowit.flightapp.ui.FlightScheduleViewModelFactory
+import ng.com.knowit.flightapp.utility.CustomDialog
 import ng.com.knowit.flightapp.utility.SharedPreference
 import ng.com.knowit.flightapp.utility.convertTo
 import ng.com.knowit.flightapp.utility.utility
@@ -58,6 +59,7 @@ class FlightScheduleActivity : AppCompatActivity() {
         }
 
 
+        val progressBar = CustomDialog(this, false)
 
         binding.flightScheduleRecyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -70,6 +72,19 @@ class FlightScheduleActivity : AppCompatActivity() {
 
         flightScheduleViewModel = ViewModelProviders.of(this, flightScheduleViewModelFactory)
             .get(FlightScheduleViewModel::class.java)
+
+
+        /*flightScheduleViewModel.getIsFetching().observe(this, Observer { value->
+
+            if(value == true){
+                progressBar.show()
+
+            } else{
+
+                progressBar.dismiss()
+            }
+
+        })*/
 
         flightScheduleViewModel.getAllFlightSchedule(identifier)
             .observe(this, Observer<List<FlightSchedule>> { flightList ->
@@ -112,6 +127,7 @@ class FlightScheduleActivity : AppCompatActivity() {
                 try {
 
                     if (utility.isOnline(this@FlightScheduleActivity)) {
+
 
                         getAirportLocation(departureCode, sharedPreference.getTokenValue()!!)
                         getAirportLocation(arrivalCode, sharedPreference.getTokenValue()!!)

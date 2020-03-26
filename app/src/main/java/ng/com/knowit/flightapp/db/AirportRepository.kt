@@ -2,15 +2,23 @@ package ng.com.knowit.flightapp.db
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ng.com.knowit.flightapp.api.ApiInterface
 import ng.com.knowit.flightapp.model.Airport
 
+
 class AirportRepository(private val database: AirportDatabase) {
+
+    private val isFetching = MutableLiveData<Boolean>()
 
     fun getAllAirport(): LiveData<List<Airport>> {
         return database.airportDao().getAllAirport()
+    }
+
+    fun getAllAirportList(): List<Airport> {
+        return database.airportDao().getAllAirportList()
     }
 
     fun getAllAirportMatchingQuery(query: String): LiveData<List<Airport>> {

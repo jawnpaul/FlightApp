@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -12,6 +13,7 @@ import ng.com.knowit.flightapp.db.AirportDatabase.DatabaseProvider.getDatabase
 import ng.com.knowit.flightapp.db.AirportRepository
 import ng.com.knowit.flightapp.model.Airport
 import java.io.IOException
+
 
 class AirportViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,6 +24,10 @@ class AirportViewModel(application: Application) : AndroidViewModel(application)
 
     fun getAllAirports(): LiveData<List<Airport>> {
         return repository.getAllAirport()
+    }
+
+    fun getAllAirportList(): List<Airport> {
+        return repository.getAllAirportList()
     }
 
     fun getAirportsMatchingQuery(query: String): LiveData<List<Airport>> {
@@ -60,5 +66,15 @@ class AirportViewModel(application: Application) : AndroidViewModel(application)
 
     fun getAirportCode(search: String): String {
         return repository.getAirportCode(search).toString()
+    }
+
+    fun getIsFetching(): LiveData<Boolean> {
+
+        val currentBooleanValue: MutableLiveData<Boolean> by lazy {
+            MutableLiveData<Boolean>()
+        }
+        currentBooleanValue.value = repository.getAllAirportList().isEmpty()
+
+        return currentBooleanValue
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import ng.com.knowit.flightapp.databinding.BottomSheetLayoutBinding
 import ng.com.knowit.flightapp.model.Airport
 import ng.com.knowit.flightapp.recycleradapters.LocationAdapter
 import ng.com.knowit.flightapp.ui.AirportViewModel
+import ng.com.knowit.flightapp.utility.CustomDialog
 import java.text.DecimalFormat
 import java.util.*
 
@@ -62,8 +64,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun selectedAirport(airport: Airport) {
-        //Log.e("See","Your selected airport is ${Gson().toJson(airport)}")
-        //Toast.makeText(context!!, "Airport is ${airport.airportLocationName}", Toast.LENGTH_SHORT).show()
         if (currentEditIsOrigin != null) {
             if (currentEditIsOrigin!!) {
                 binding.flightOriginInput.setText(airport.airportLocationName)
@@ -76,15 +76,38 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     private var currentEditIsOrigin: Boolean? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        val progressBar = CustomDialog(context!!, false)
+
         binding.airportsRecyclerView.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
+        airportViewModel.getIsFetching().observe(this, Observer { value ->
+
+            if (value == true) {
+                Log.d("BSF", "Db is empty")
+                progressBar.show()
+
+            } else {
+                Log.d("BSF", "Db is not empty")
+
+                progressBar.dismiss()
+            }
+
+        })
+
         airportViewModel.getAllAirports().observe(this, Observer<List<Airport>> { airports ->
+
+            if (airports.isNotEmpty()) {
+                progressBar.dismiss()
+            }
 
             val adapter = LocationAdapter(airports) { airport -> this.selectedAirport(airport) }
             binding.airportsRecyclerView.adapter = adapter
 
+
         })
+
+
         binding.flightOriginInput.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 currentEditIsOrigin = true

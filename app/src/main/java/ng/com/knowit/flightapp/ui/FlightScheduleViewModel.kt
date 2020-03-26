@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -94,5 +95,14 @@ class FlightScheduleViewModel(
 
     }
 
+    fun getIsFetching(): LiveData<Boolean> {
+
+        val currentBooleanValue: MutableLiveData<Boolean> by lazy {
+            MutableLiveData<Boolean>()
+        }
+        currentBooleanValue.value = repository.getAllFlightScheduleList().isEmpty()
+
+        return currentBooleanValue
+    }
 
 }

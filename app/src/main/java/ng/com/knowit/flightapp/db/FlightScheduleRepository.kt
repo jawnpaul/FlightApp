@@ -17,6 +17,10 @@ class FlightScheduleRepository(private val database: FlightScheduleDatabase) : B
         return database.flightScheduleDao().getAllFlightSchedule(flightScheduleIdentifier)
     }
 
+    fun getAllFlightScheduleList(): List<FlightSchedule> {
+        return database.flightScheduleDao().getAllFlightScheduleList()
+    }
+
 
     suspend fun getFlightScheduleFromApi(
         origin: String,
