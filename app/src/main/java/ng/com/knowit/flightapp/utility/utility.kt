@@ -5,8 +5,6 @@ import android.net.ConnectivityManager
 
 
 class utility {
-
-
     companion object {
 
         fun isOnline(context: Context): Boolean {
@@ -15,6 +13,8 @@ class utility {
             return cm.activeNetworkInfo != null &&
                     cm.activeNetworkInfo.isConnectedOrConnecting
         }
+
+
     }
 
 }

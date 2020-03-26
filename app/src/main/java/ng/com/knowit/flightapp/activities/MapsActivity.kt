@@ -1,8 +1,10 @@
-package ng.com.knowit.flightapp
+package ng.com.knowit.flightapp.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,12 +19,23 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import ng.com.knowit.flightapp.R
+import ng.com.knowit.flightapp.fragments.BottomSheetFragment
+import ng.com.knowit.flightapp.model.Airport
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
+
+    private lateinit var polyline: Polyline
+
+    private lateinit var latLngList: List<LatLng>
+
+    lateinit var airportList: List<Airport>
 
     private lateinit var bottomSheet: View
 
@@ -31,6 +44,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_LOCATION_PERMISSION = 1
 
+    //key = yr46gzu4nsyqheepzpewm8ct
+    //secret  = rht2PAx8eH
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -38,6 +54,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        val intent = intent
+        if (intent != null) {
+
+            val list = (intent.extras?.getSerializable("list"))
+
+            try {
+                list as List<Airport>
+
+                //latLngList = getLatLng(list)
+
+                airportList = list
+
+                //getPolyLine(airportList, map)
+                Log.d("MapsA", "Polyline Gotten")
+
+            } catch (e: TypeCastException) {
+
+                Log.d("MapsA", e.toString())
+            }
+
+
+        }
 
 
         bottomSheet = findViewById(R.id.bottom_sheet1)
@@ -76,11 +115,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
-        tapActionLayout.setOnClickListener(View.OnClickListener {
-            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+        tapActionLayout.setOnClickListener {
+            /*if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-            }
-        })
+            }*/
+            showBottomSheetDialogFragment()
+        }
 
     }
 
@@ -96,20 +136,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
 
         map = googleMap
-
-        val latitude = 37.422160
-        val longitude = -122.084270
-        val zoomLevel = 15f
-
-        val homeLatLng = LatLng(latitude, longitude)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
-        map.addMarker(MarkerOptions().position(homeLatLng))
-
         setMapLongClick(map)
 
         setPoiClick(map)
         enableLocation()
 
+
+
+        if (this::airportList.isInitialized) {
+            updateMap(airportList)
+            var airportLatitude: Double
+            var airportLongitude: Double
+            try {
+
+                airportLatitude = airportList[0].airportLatitude!!
+                airportLongitude = airportList[0].airportLongitude!!
+                val departureLatLng = LatLng(airportLatitude, airportLongitude)
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(departureLatLng, 6f))
+                Log.d("MapsA", "Map Updated")
+
+            } catch (e: NullPointerException) {
+
+                //Unable to get Location or location hasn't been updated in the db
+            }
+
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -201,5 +252,51 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+
+    private fun showBottomSheetDialogFragment() {
+        val bottomSheetFragment =
+            BottomSheetFragment()
+        bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+
+
+    }
+
+    private fun getPolyOptions(list: List<Airport>): PolylineOptions {
+
+        val pathOptions = PolylineOptions().color(Color.BLACK)
+        pathOptions.addAll(getLatLng(list))
+        return pathOptions
+    }
+
+    private fun getLatLng(airportList: List<Airport>): List<LatLng> {
+        val list = mutableListOf<LatLng>()
+        for (item in airportList) {
+
+            var airportLatitude: Double
+            var airportLongitude: Double
+
+            try {
+
+                airportLatitude = item.airportLatitude!!
+                airportLongitude = item.airportLongitude!!
+
+                val latLng = LatLng(airportLatitude, airportLongitude)
+
+                Log.d("MAPS", latLng.latitude.toString())
+
+                list.add(latLng)
+            } catch (e: KotlinNullPointerException) {
+                Log.d("MAPS", e.toString())
+            }
+
+
+        }
+
+        return list
+    }
+
+    private fun updateMap(list: List<Airport>) {
+        map.addPolyline(getPolyOptions(list))
+    }
 }
 

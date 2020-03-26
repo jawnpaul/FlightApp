@@ -1,9 +1,10 @@
-package ng.com.knowit.flightapp
+package ng.com.knowit.flightapp.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
+import ng.com.knowit.flightapp.R
 import ng.com.knowit.flightapp.utility.utility
 
 class MainActivity : AppCompatActivity() {

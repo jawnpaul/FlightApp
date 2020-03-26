@@ -9,4 +9,13 @@
     <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>
+    <string name="lagos_nigeria">Lagos, Nigeria</string>
+    <string name="airport_name">Muritala Muhammed International Airport</string>
+    <string name="where_are_you_flying_to">Where are you flying to?</string>
+    <string name="destination">DESTINATION</string>
+    <string name="where_are_you_flying_from">Where are you flying from?</string>
+    <string name="origin">ORIGIN</string>
+    <string name="where_would_you_like_to_go">Where would you like to go?</string>
+    <string name="search">Search</string>
+    <string name="date">DATE</string>
 </resources>
