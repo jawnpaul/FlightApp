@@ -18,4 +18,5 @@
     <string name="where_would_you_like_to_go">Where would you like to go?</string>
     <string name="search">Search</string>
     <string name="date">DATE</string>
+    <string name="select_date">Select date</string>
 </resources>

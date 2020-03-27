@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/flight_schedule_recycler_view"
-        android:layout_width="match_parent"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="ng.com.knowit.flightapp.ui.FlightScheduleViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_height="match_parent"
-        tools:context=".activities.FlightScheduleActivity"
-        tools:listitem="@layout/single_schedule_flight_item">
+        android:layout_width="match_parent"
+        android:orientation="vertical">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <ImageView
+            android:id="@+id/no_result_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_undraw_empty"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/flight_schedule_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:context=".activities.FlightScheduleActivity"
+            tools:listitem="@layout/single_schedule_flight_item">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
+
 
 </layout>
 

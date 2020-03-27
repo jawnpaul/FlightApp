@@ -176,23 +176,27 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             }
         })
 
-        binding.dateText.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val month = calendar.get(Calendar.MONTH)
-            val year = calendar.get(Calendar.YEAR)
-            val pickerDialog = DatePickerDialog(
-                context!!,
-                { _, year1, monthOfYear, dayOfMonth ->
-                    binding.dateTextView.setText(
-                        year1.toString() + "-" + (DecimalFormat(
-                            "00"
-                        ).format(monthOfYear + 1)) + "-" + dayOfMonth
-                    )
-                },
-                year, month, day
-            )
-            pickerDialog.show()
+
+        binding.flightDateInput.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val calendar = Calendar.getInstance()
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+                val month = calendar.get(Calendar.MONTH)
+                val year = calendar.get(Calendar.YEAR)
+                val pickerDialog = DatePickerDialog(
+                    context!!,
+                    { _, year1, monthOfYear, dayOfMonth ->
+                        binding.flightDateInput.setText(
+                            year1.toString() + "-" + (DecimalFormat(
+                                "00"
+                            ).format(monthOfYear + 1)) + "-" + dayOfMonth
+                        )
+                    },
+                    year, month, day
+                )
+                pickerDialog.show()
+            }
+
         }
 
         binding.searchButton.setOnClickListener {
@@ -201,14 +205,22 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
             if (binding.flightOriginInput.text.toString().trim().isNotEmpty() &&
                 binding.flightDestinationInput.text.toString().trim().isNotEmpty() &&
-                binding.dateTextView.text.toString().trim().isNotEmpty()
+                binding.flightDateInput.text.toString().trim().isNotEmpty()
             ) {
 
-                val intent = Intent(activity, FlightScheduleActivity::class.java)
-                intent.putExtra("originAirportCode", getOriginAirportCode())
-                intent.putExtra("destinationAirportCode", getDestinationAirportCode())
-                intent.putExtra("date", binding.dateTextView.text)
-                startActivity(intent)
+                try {
+
+                    val intent = Intent(activity, FlightScheduleActivity::class.java)
+                    intent.putExtra("originAirportCode", getOriginAirportCode())
+                    intent.putExtra("destinationAirportCode", getDestinationAirportCode())
+                    intent.putExtra("date", binding.flightDateInput.text.toString().trim())
+                    startActivity(intent)
+
+                } catch (e: IndexOutOfBoundsException) {
+                    Toast.makeText(context, "Select an airport from the list", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
             } else {
                 Toast.makeText(context, "Input Cannot be Empty", Toast.LENGTH_SHORT).show()
             }

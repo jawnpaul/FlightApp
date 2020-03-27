@@ -37,7 +37,7 @@ interface ApiInterface {
         // Configure retrofit to parse JSON and use coroutines
         private val retrofit = Retrofit.Builder()
             .baseUrl("https://api.easypnr.com/v4/")
-            .client(attachAirportTokenToRetrofit("gEtxumGvzoAqVRTfbxGbZuzZRFymLx"))
+            .client(attachAirportTokenToRetrofit(selectToken()))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
@@ -51,6 +51,20 @@ interface ApiInterface {
                         .addHeader("X-Api-Key", accessToken).build()
                     chain.proceed(request)
                 }.build()
+        }
+
+        fun selectToken(): String {
+            val tokenList = arrayOf(
+                "MEabhzhRzDkYKbXXLfIVAeZRgoGxZY",
+                "AbijjfFRkUoANttWGsBYrfRbhMFQRG",
+                "QNLZzyduWdEnitJsTBFTvjEBwLosTg",
+                "LSJUZqdwiePisQekYMnkVFKWESsKHX",
+                "GLblMTZayTACrsLyjfKhTLkluWeMpM",
+                "qhDkTuMelpabYDkmkvarmTwhilDDYf",
+                "YYpPOuvaEknkFDTXTNdhOTVHHjBXkl"
+            )
+            val randomInt = (0 until 7).random()
+            return tokenList[randomInt]
         }
 
 

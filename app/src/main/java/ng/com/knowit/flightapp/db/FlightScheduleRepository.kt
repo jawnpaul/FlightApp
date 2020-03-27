@@ -17,8 +17,8 @@ class FlightScheduleRepository(private val database: FlightScheduleDatabase) : B
         return database.flightScheduleDao().getAllFlightSchedule(flightScheduleIdentifier)
     }
 
-    fun getAllFlightScheduleList(): List<FlightSchedule> {
-        return database.flightScheduleDao().getAllFlightScheduleList()
+    fun getAllFlightScheduleList(identifier: String): List<FlightSchedule> {
+        return database.flightScheduleDao().getAllFlightScheduleListt(identifier)
     }
 
 
@@ -50,10 +50,13 @@ class FlightScheduleRepository(private val database: FlightScheduleDatabase) : B
         try {
             // some code
 
+            //show progress
+
             val response = safeApiCall<JsonObject>(
                 call = { apiCall.getFlights(origin, destination, date).await() },
                 errorMessage = "Error Fetching Flight Schedule"
             )
+
 
             Log.d("FlightScheduleRepo", "Flight Schedule is called")
             val gson = Gson()
@@ -84,6 +87,7 @@ class FlightScheduleRepository(private val database: FlightScheduleDatabase) : B
 
         } catch (e: NullPointerException) {
             // handler
+            //dismiss progress
 
             Log.e("FSR", e.toString())
         }

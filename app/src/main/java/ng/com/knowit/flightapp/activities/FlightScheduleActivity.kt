@@ -4,6 +4,8 @@ import android.accounts.NetworkErrorException
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import kotlinx.android.synthetic.main.activity_flight_schedule.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ng.com.knowit.flightapp.R
@@ -22,7 +25,6 @@ import ng.com.knowit.flightapp.model.*
 import ng.com.knowit.flightapp.recycleradapters.FlightScheduleAdapter
 import ng.com.knowit.flightapp.ui.FlightScheduleViewModel
 import ng.com.knowit.flightapp.ui.FlightScheduleViewModelFactory
-import ng.com.knowit.flightapp.utility.CustomDialog
 import ng.com.knowit.flightapp.utility.SharedPreference
 import ng.com.knowit.flightapp.utility.convertTo
 import ng.com.knowit.flightapp.utility.utility
@@ -59,10 +61,9 @@ class FlightScheduleActivity : AppCompatActivity() {
         }
 
 
-        val progressBar = CustomDialog(this, false)
-
         binding.flightScheduleRecyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+
 
 
         flightScheduleViewModelFactory =
@@ -74,20 +75,35 @@ class FlightScheduleActivity : AppCompatActivity() {
             .get(FlightScheduleViewModel::class.java)
 
 
-        /*flightScheduleViewModel.getIsFetching().observe(this, Observer { value->
+        flightScheduleViewModel.getIsFetching(identifier).observe(this, Observer { value ->
 
             if(value == true){
-                progressBar.show()
+                binding.progressBar.visibility = View.VISIBLE
 
             } else{
 
-                progressBar.dismiss()
+                // progressBar.dismiss()
+                binding.progressBar.visibility = View.GONE
             }
 
-        })*/
+        })
 
         flightScheduleViewModel.getAllFlightSchedule(identifier)
             .observe(this, Observer<List<FlightSchedule>> { flightList ->
+
+                if (flightList.isEmpty()) {
+                    //progressBar.dismiss()
+
+                    binding.noResultImageView.visibility = View.VISIBLE
+                    binding.flightScheduleRecyclerView.visibility = View.GONE
+                    Toast.makeText(this, "No result found", Toast.LENGTH_SHORT).show()
+                } else {
+                    //not empty
+                    // progressBar.dismiss()
+                    binding.flightScheduleRecyclerView.visibility = View.VISIBLE
+                    binding.noResultImageView.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                }
 
                 val adapter = FlightScheduleAdapter(
                     scheduleList(flightList),

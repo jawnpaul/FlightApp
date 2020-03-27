@@ -2,6 +2,8 @@ package ng.com.knowit.flightapp.ui
 
 import android.app.Application
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -33,15 +35,15 @@ class FlightScheduleViewModel(
         return repository.getAllFlightSchedule(flightScheduleIdentifier)
     }
 
-
+    val progressBar = ProgressBar(application)
     private val viewModelJob = SupervisorJob()
 
     private val viewModelScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
 
     init {
-
-        getDataFromRepository()
+        progressBar.visibility = View.VISIBLE
+        getDataFromApi()
     }
 
 
@@ -51,7 +53,9 @@ class FlightScheduleViewModel(
     }
 
 
-    private fun getDataFromRepository() {
+    private fun getDataFromApi() {
+
+
         viewModelScope.launch {
             try {
 
@@ -77,7 +81,7 @@ class FlightScheduleViewModel(
 
                 repository.getFlightScheduleFromApi(origin, destination, date, tokenToBeUsed)
 
-
+                progressBar.visibility = View.GONE
                 viewModelJob.cancel()
 
                 Log.d("FSVM", "Job cancelled")
@@ -85,6 +89,7 @@ class FlightScheduleViewModel(
             } catch (networkError: IOException) {
                 // Show a Toast error message.
 
+                progressBar.visibility = View.GONE
                 //For some reasons, this guy isn't always called
                 Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT)
                     .show()
@@ -95,12 +100,12 @@ class FlightScheduleViewModel(
 
     }
 
-    fun getIsFetching(): LiveData<Boolean> {
+    fun getIsFetching(identifier: String): LiveData<Boolean> {
 
         val currentBooleanValue: MutableLiveData<Boolean> by lazy {
             MutableLiveData<Boolean>()
         }
-        currentBooleanValue.value = repository.getAllFlightScheduleList().isEmpty()
+        currentBooleanValue.value = repository.getAllFlightScheduleList(identifier).isEmpty()
 
         return currentBooleanValue
     }

@@ -19,6 +19,9 @@ interface FlightScheduleDao {
     @Query("SELECT * FROM flight_schedule_table WHERE flightScheduleIdentifier LIKE :flightScheduleIdentifier")
     fun getAllFlightSchedule(flightScheduleIdentifier: String): LiveData<List<FlightSchedule>>
 
+    @Query("SELECT * FROM flight_schedule_table WHERE flightScheduleIdentifier LIKE :flightScheduleIdentifier")
+    fun getAllFlightScheduleListt(flightScheduleIdentifier: String): List<FlightSchedule>
+
     @Query("SELECT * FROM flight_schedule_table ORDER BY flightScheduleLocalId ASC")
     fun getAllFlightScheduleLiveList(): LiveData<List<FlightSchedule>>
 

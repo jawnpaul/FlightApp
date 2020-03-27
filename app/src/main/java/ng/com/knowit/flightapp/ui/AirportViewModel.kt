@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import ng.com.knowit.flightapp.db.AirportDatabase.DatabaseProvider.getDatabase
 import ng.com.knowit.flightapp.db.AirportRepository
 import ng.com.knowit.flightapp.model.Airport
+import ng.com.knowit.flightapp.utility.utility
 import java.io.IOException
 
 
@@ -41,7 +42,13 @@ class AirportViewModel(application: Application) : AndroidViewModel(application)
 
 
     init {
-        getDataFromRepository()
+        if (utility.isOnline(application)) {
+            getDataFromRepository()
+        } else {
+            Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT)
+                .show()
+        }
+
     }
 
 
